@@ -1,2 +1,2 @@
 # Readthat
-PHP News feed for PHP course ¯\_(ツ)_/¯
+PHP News feed for PHP course ¯\\_(ツ)_/¯
