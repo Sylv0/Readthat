@@ -36,7 +36,6 @@
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <hr>
     <section class="container">
       <div class="row">
         <div class="col-sm-12 col-md-6 row bg-primary">
