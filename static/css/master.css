@@ -1,0 +1,8 @@
+div.col-1 a{
+      text-decoration: none;
+      color: black;
+}
+
+div.col-1 a:hover{
+      color: gray;
+}

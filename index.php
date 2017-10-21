@@ -1,10 +1,31 @@
 <?php
-$post = ['title'=> "Test", "author"=> "Sylvan", "text"=> "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."];
 
-$serializedData = serialize($post);
-file_put_contents('static/php/data.txt', $post);
+$recoveredData = file_get_contents('static/php/data.txt');
+if($recoveredData)
+{
+      $recoveredArray = unserialize($recoveredData);
+}else
+{
+      $recoveredArray = [];
+}
+if(isset($_POST) && sizeof($_POST) > 0)
+{
+      $data = [];
+      foreach ($_POST as $key => $value)
+      {
+            if(strlen($value) > 0) $data[$key] = $value;
+      }
+      $data['likes'] = 0;
+      $data['date'] = date("d-m-y H:i");
+      if(sizeof($data) === 5)array_push($recoveredArray, $data);
+}
 
- ?>
+if(sizeof($recoveredArray) > 0)
+      $serializedData = serialize($recoveredArray);
+if(isset($serializedData))
+file_put_contents('static/php/data.txt', $serializedData);
+
+?>
 
 
 <!DOCTYPE html>
@@ -35,34 +56,37 @@ file_put_contents('static/php/data.txt', $post);
       </nav>
 
       <main class="container">
-            <form>
+            <form method="post">
                   <div class="form-group row">
-                        <input type="text" class="form-control col-sm-12 col-md-6" id="title" placeholder="Title">
-                        <input type="text" class="form-control col-sm-12 col-md-6" id="author" placeholder="Author">
+                        <input type="text" class="form-control col-sm-12 col-md-6" id="title" placeholder="Title" name="title">
+                        <input type="text" class="form-control col-sm-12 col-md-6" id="author" placeholder="Author" name="author">
                   </div>
                   <div class="form-group row">
-                        <textarea class="form-control col-12" id="post" rows="3" placeholder="Post"></textarea>
+                        <textarea class="form-control col-12" id="post" rows="3" placeholder="Post" name="text"></textarea>
                   </div>
                   <button type="submit" class="btn btn-primary">Submit</button>
             </form>
+            <hr>
             <section class="container">
                   <div class="row">
-                        <?php
-                        $recoveredData = file_get_contents('static/php/data.txt');
-                        $recoveredArray = unserialize($recoveredData);
-                        var_dump($recoveredArray);
-                        if(sizeof($recoveredArray) === 0): ?>
-                        <div class="col-12">
-                              <p>No data</p>
-                        </div>
-                  <?php else: ?>
-                        <div class="col-sm-12 col-md-6 row bg-primary">
-                              <div class="col-sm-12 col-md-6">((title))</div>
-                              <div class="col-sm-12 col-md-6 row justify-content-end">by ((author))</div>
-                              <div class="col-12 bg-info">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
-                              <div class="col-11 row justify-content-end">((date))</div>
-                        </div>
-                  <?php endif; ?>
+                        <?php if(sizeof($recoveredArray) === 0): ?>
+                              <div class="col-12">
+                                    <p>No data</p>
+                              </div>
+                        <?php else:
+                              foreach (array_reverse($recoveredArray) as $key => $data): ?>
+                              <div class="card col-sm-12 col-md-6">
+                                    <div class="card-body row align-items-center">
+                                          <div class="card-title col-sm-12 col-md-6"><?php echo $data['title']; ?></div>
+                                          <div class="col-sm-12 col-md-6 row justify-content-end">by <?php echo $data['author']; ?></div>
+                                          <div class="card-text col-12 bg-info" style="height: 200px; overflow: scroll;"><?php echo $data['text']; ?></div>
+                                          <div class="col-2"><?php echo $data['likes']; ?><a class="btn btn-primary btn-sm" href="#">&#x25B2;</a></div>
+                                          <div class="col-9 row justify-content-end"><?php echo $data['date']; ?></div>
+                                          <div class="col-1"><a class="btn btn-warning btn-sm" href="removepost.php?index=<?php echo $key; ?>">x</a></div>
+                                    </div>
+                              </div>
+                        <?php endforeach;
+                  endif; ?>
             </div>
       </section>
 </main>
