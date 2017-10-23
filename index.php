@@ -54,7 +54,7 @@ file_put_contents('static/php/data.txt', $serializedData);
                   </ul>
             </div>
       </nav>
-
+      <hr>
       <main class="container">
             <form method="post">
                   <div class="form-group row">
