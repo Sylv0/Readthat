@@ -8,7 +8,7 @@ if($recoveredData)
   $recoveredArray = unserialize($recoveredData);
 }else
 {
-  $recoveredArray = [];
+  $recoveredArray = ['actors' => [], 'posts' => []];
 }
 if(isset($_POST) && sizeof($_POST) > 0)
 {
@@ -20,10 +20,9 @@ if(isset($_POST) && sizeof($_POST) > 0)
   $data['likes'] = 0;
   $data['date'] = date("d-m-y H:i");
   var_dump($data);
-  if(sizeof($data) === 6) array_push($recoveredArray, $data);
+  if(sizeof($data) === 6) array_push($recoveredArray['posts'], $data);
 }
-
-if(sizeof($recoveredArray) > 0)
+if(sizeof($recoveredArray['posts']) > 0)
 $serializedData = serialize($recoveredArray);
 if(isset($serializedData))
 file_put_contents('static/php/data.txt', $serializedData);
@@ -72,12 +71,12 @@ file_put_contents('static/php/data.txt', $serializedData);
     <hr>
     <section class="container">
       <div class="row">
-        <?php if(sizeof($recoveredArray) === 0): ?>
+        <?php if(sizeof($recoveredArray['posts']) === 0): ?>
           <div class="col-12">
             <p>No data - Start posting!</p>
           </div>
         <?php else:
-          foreach (array_reverse($recoveredArray) as $key => $data): ?>
+          foreach (array_reverse($recoveredArray['posts']) as $key => $data): ?>
           <div class="card col-sm-12 col-md-6">
             <div class="card-body row align-items-center">
               <div class="card-title col-es-12 col-md-6"><?php echo $data['title']; ?></div>
@@ -85,7 +84,7 @@ file_put_contents('static/php/data.txt', $serializedData);
               <div class="card-text col-12 bg-info" style="height: 200px; overflow: scroll;"><?php echo $data['text']; ?></div>
               <div class="col-2"><?php echo $data['likes']; ?><a class="btn btn-primary btn-sm" href="#">&#x25B2;</a></div>
               <div class="col-9 row justify-content-end"><?php echo $data['date']; ?></div>
-              <div class="col-1"><a class="btn btn-warning btn-sm" href="removepost.php?index=<?php echo $key; ?>">x</a></div>
+              <div class="col-1"><a class="btn btn-warning btn-sm" href="removepost.php?index=<?php echo (sizeof($recoveredArray['posts'])-1-$key); ?>">x</a></div>
             </div>
           </div>
         <?php endforeach;
