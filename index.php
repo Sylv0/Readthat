@@ -19,7 +19,8 @@ if(isset($_POST) && sizeof($_POST) > 0)
   }
   $data['likes'] = 0;
   $data['date'] = date("d-m-y H:i");
-  if(sizeof($data) === 5)array_push($recoveredArray['posts'], $data);
+  var_dump($data);
+  if(sizeof($data) === 6) array_push($recoveredArray, $data);
 }
 
 if(sizeof($recoveredArray) > 0)
@@ -66,7 +67,7 @@ file_put_contents('static/php/data.txt', $serializedData);
       <div class="form-group row">
         <textarea class="form-control col-12" id="post" rows="3" placeholder="Post" name="text"></textarea>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button name="new_post" value="true" type="submit" class="btn btn-primary">Submit</button>
     </form>
     <hr>
     <section class="container">
@@ -79,8 +80,8 @@ file_put_contents('static/php/data.txt', $serializedData);
           foreach (array_reverse($recoveredArray) as $key => $data): ?>
           <div class="card col-sm-12 col-md-6">
             <div class="card-body row align-items-center">
-              <div class="card-title col-sm-12 col-md-6"><?php echo $data['title']; ?></div>
-              <div class="col-sm-12 col-md-6 row justify-content-end">by <?php echo $data['author']; ?></div>
+              <div class="card-title col-es-12 col-md-6"><?php echo $data['title']; ?></div>
+              <div class="col-es-12 col-md-6 row justify-content-end">by <?php echo $data['author']; ?></div>
               <div class="card-text col-12 bg-info" style="height: 200px; overflow: scroll;"><?php echo $data['text']; ?></div>
               <div class="col-2"><?php echo $data['likes']; ?><a class="btn btn-primary btn-sm" href="#">&#x25B2;</a></div>
               <div class="col-9 row justify-content-end"><?php echo $data['date']; ?></div>
