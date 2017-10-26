@@ -2,31 +2,27 @@
 
 declare(strict_types=1);
 
-$recoveredData = file_get_contents('static/php/data.txt');
-if($recoveredData)
+$pathToFile = 'static/js/data.json';
+
+//$fh = fopen('static/php/data.txt', 'w') or die("Can't create file");
+// $recoveredData = file_get_contents('static/php/data.txt');
+if(file_exists($pathToFile)){
+  $recoveredData = file_get_contents($pathToFile);
+}
+
+if(isset($recoveredData) && $recoveredData)
 {
-  $recoveredArray = unserialize($recoveredData);
+  $recoveredArray = json_decode($recoveredData, true);
 }else
 {
   $recoveredArray = ['actors' => [], 'posts' => []];
 }
-if(isset($_POST) && sizeof($_POST) > 0)
-{
-  $data = [];
-  foreach ($_POST as $key => $value)
-  {
-    if(strlen($value) > 0) $data[$key] = $value;
-  }
-  $data['likes'] = 0;
-  $data['date'] = date("d-m-y H:i");
-  var_dump($data);
-  if(sizeof($data) === 6) array_push($recoveredArray['posts'], $data);
-}
-if(sizeof($recoveredArray['posts']) > 0)
-$serializedData = serialize($recoveredArray);
-if(isset($serializedData))
-file_put_contents('static/php/data.txt', $serializedData);
 
+if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
+
+  $serializedData = json_encode($recoveredArray);
+  file_put_contents($pathToFile, $serializedData);
+}
 ?>
 
 
@@ -44,7 +40,6 @@ file_put_contents('static/php/data.txt', $serializedData);
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
@@ -56,12 +51,20 @@ file_put_contents('static/php/data.txt', $serializedData);
       </ul>
     </div>
   </nav>
-  <hr>
+
   <main class="container">
-    <form method="post">
+    <form method="post" action="posts.php">
       <div class="form-group row">
         <input type="text" class="form-control col-sm-12 col-md-6" id="title" placeholder="Title" name="title">
-        <input type="text" class="form-control col-sm-12 col-md-6" id="author" placeholder="Author" name="author">
+        <input list="authors" name="author" placeholder="Author">
+        <datalist id="authors">
+          <?php foreach ($recoveredArray['authors'] as $value): ?>
+            <option value="<?php echo $value ?>"></option>
+          <?php endforeach; ?>
+        </datalist>
+        <span class="input-group-btn">
+          <button class="btn btn-secondary" type="button">+</button>
+        </span>
       </div>
       <div class="form-group row">
         <textarea class="form-control col-12" id="post" rows="3" placeholder="Post" name="text"></textarea>
