@@ -1,15 +1,15 @@
 <?php
-
 declare(strict_types=1);
 
+// Path to with data
 $pathToFile = 'static/js/data.json';
 
-//$fh = fopen('static/php/data.txt', 'w') or die("Can't create file");
-// $recoveredData = file_get_contents('static/php/data.txt');
+// Only load from file if it exists
 if(file_exists($pathToFile)){
   $recoveredData = file_get_contents($pathToFile);
 }
 
+// Decode JSON if there's data, else create array
 if(isset($recoveredData) && $recoveredData)
 {
   $recoveredArray = json_decode($recoveredData, true);
@@ -18,8 +18,8 @@ if(isset($recoveredData) && $recoveredData)
   $recoveredArray = ['actors' => [], 'posts' => []];
 }
 
+// Create the file if it doesn't exist
 if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
-
   $serializedData = json_encode($recoveredArray);
   file_put_contents($pathToFile, $serializedData);
 }
@@ -35,6 +35,7 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
   <link rel="stylesheet" href="static/css/master.css">
 </head>
 <body>
+  <!-- Navbar. Not used, only looks good  -->
   <nav class="navbar navbar-expand-md navbar-light bg-light">
     <a class="navbar-brand" href="/Readthat/">Navbar</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,12 +59,12 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
         <input type="text" class="form-control col-sm-12 col-md-6" id="title" placeholder="Title" name="title">
         <input list="authors" name="author" placeholder="Author">
         <datalist id="authors">
-          <?php foreach ($recoveredArray['authors'] as $value): ?>
+          <?php foreach ($recoveredArray['author'] as $value): ?>
             <option value="<?php echo $value ?>"></option>
           <?php endforeach; ?>
         </datalist>
         <span class="input-group-btn">
-          <button class="btn btn-secondary" type="button">+</button>
+          <button class="btn btn-secondary" type="submit" name="add_author">+</button>
         </span>
       </div>
       <div class="form-group row">
@@ -72,6 +73,7 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
       <button name="new_post" value="true" type="submit" class="btn btn-primary">Submit</button>
     </form>
     <hr>
+
     <section class="container">
       <div class="row">
         <?php if(sizeof($recoveredArray['posts']) === 0): ?>
@@ -87,7 +89,12 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
               <div class="card-text col-12 bg-info" style="height: 200px; overflow: scroll;"><?php echo $data['text']; ?></div>
               <div class="col-2"><?php echo $data['likes']; ?><a class="btn btn-primary btn-sm" href="#">&#x25B2;</a></div>
               <div class="col-9 row justify-content-end"><?php echo $data['date']; ?></div>
-              <div class="col-1"><a class="btn btn-warning btn-sm" href="removepost.php?index=<?php echo (sizeof($recoveredArray['posts'])-1-$key); ?>">x</a></div>
+              <div class="col-1">
+                <form method="post" action="posts.php">
+                  <input type="number" name="index" value="<?php echo sizeof($recoveredArray['posts']) - $key - 1; ?>" hidden>
+                  <button type="submit" name="remove_post" class="btn btn-warning btn-sm">x</button>
+                </form>
+              </div>
             </div>
           </div>
         <?php endforeach;
