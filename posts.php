@@ -1,36 +1,35 @@
 <?php
 declare(strict_types=1);
 
+// Try to read and decode data or create empty array.
 $recoveredData = file_get_contents('static/js/data.json');
 if($recoveredData){ $recoveredArray = json_decode($recoveredData, true);}
 else{ $recoveredArray = ['author' => [], 'posts' => []];}
 
+//
 if(isset($_POST['add_author']))
 {
-  if(!in_array($_POST['author'], $recoveredArray['author']))
+  $authorKey = str_replace([" ", " ", "."], "", strtolower($_POST['author']));
+  if(!isset($recoveredArray['author'][$authorKey]));
   {
-    array_push($recoveredArray['author'], $_POST['author']);
-    sort($recoveredArray['author']);
+    $recoveredArray['author'][$authorKey] = ucwords($_POST['author']);
   }
 }
 
 if(isset($_POST['new_post']))
 {
-  if(isset($_POST) && sizeof($_POST) > 0)
+  $data = [];
+  foreach ($_POST as $key => $value)
   {
-    $data = [];
-    foreach ($_POST as $key => $value)
-    {
-      if(strlen($value) > 0) $data[$key] = $value;
-    }
-    if(in_array($data['author'], $recoveredArray['author']))
-    {
-
-    }
-    $data['likes'] = 0;
-    $data['date'] = date("d-m-y H:i");
-    if(sizeof($data) === 6) array_push($recoveredArray['posts'], $data);
+    if(strlen($value) > 0) $data[$key] = $value;
   }
+  if(in_array($data['author'], $recoveredArray['author']))
+  {
+    $data['author'] = array_search($data['author'], $recoveredArray['author'], true);
+  }
+  $data['likes'] = 0;
+  $data['date'] = date("d-m-y H:i");
+  if(sizeof($data) === 6) array_push($recoveredArray['posts'], $data);
 }
 if(isset($_POST['remove_post']))
 {

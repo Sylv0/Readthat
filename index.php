@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require 'static/php/functions.php';
+
 // Path to with data
 $pathToFile = 'static/js/data.json';
 
@@ -35,6 +37,11 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile))
   <title>Readthat</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
   <link rel="stylesheet" href="static/css/master.css">
+  <script type="text/javascript">
+  const pd = function(e){
+    e.preventDefault();
+  }
+  </script>
 </head>
 <body>
   <!-- Navbar. Not used, only looks good  -->
@@ -88,19 +95,23 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile))
           <div class="card col-sm-12 col-md-6">
             <div class="card-body row align-items-center">
               <div class="card-title col-es-12 col-md-6"><?php echo $data['title']; ?></div>
-              <div class="col-es-12 col-md-6 row justify-content-end">by <?php echo $data['author']; ?></div>
+              <div class="col-es-12 col-md-6 row justify-content-end">
+                by <?php echo $recoveredArray['author'][strToKey($data['author'])]; ?>
+              </div>
               <div class="card-text col-12 bg-info" style="height: 300px; overflow: scroll;">
                 <div style="overflow: hidden;">
-                  <?php echo $data['text'];
-
-                  // Easter is early and here is the first egg.
-                  if(strpos($data['text'], "lorem") !== false && strpos($data['text'], "ipsum") !== false)
+                  <?php
+                  // If title contains the words 'lorem' and 'ipsum', gif.
+                  if(strpos($data['title'], "lorem") !== false && strpos($data['title'], "ipsum") !== false)
                   {
                     require 'static/html/secret.html';
+                    // Else, regular text.
+                  }else{
+                    echo $data['text'];
                   } ?>
                 </div>
               </div>
-              <div class="col-2"><?php echo $data['likes']; ?><a class="btn btn-primary btn-sm" href="#">&#x25B2;</a></div>
+              <div class="col-2"><a class="btn btn-primary btn-sm" href="#" onclick="pd(event);"><?php echo $data['likes']; ?></a></div>
               <div class="col-9 row justify-content-end"><?php echo $data['date']; ?></div>
               <div class="col-1">
                 <form method="post" action="posts.php">
