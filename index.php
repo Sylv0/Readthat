@@ -5,7 +5,8 @@ declare(strict_types=1);
 $pathToFile = 'static/js/data.json';
 
 // Only load from file if it exists
-if(file_exists($pathToFile)){
+if(file_exists($pathToFile))
+{
   $recoveredData = file_get_contents($pathToFile);
 }
 
@@ -19,7 +20,8 @@ if(isset($recoveredData) && $recoveredData)
 }
 
 // Create the file if it doesn't exist
-if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
+if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile))
+{
   $serializedData = json_encode($recoveredArray);
   file_put_contents($pathToFile, $serializedData);
 }
@@ -37,7 +39,7 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
 <body>
   <!-- Navbar. Not used, only looks good  -->
   <nav class="navbar navbar-expand-md navbar-light bg-light">
-    <a class="navbar-brand" href="/Readthat/">Navbar</a>
+    <a class="navbar-brand" href="/Readthat/">Readthat</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -47,7 +49,7 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
           <a class="nav-link" href="/Readthat/">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/Readthat/links.php">Link</a>
+          <a id="link-btn" class="nav-link" href="/Readthat/links.php" onclick="">Link</a>
         </li>
       </ul>
     </div>
@@ -80,13 +82,24 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
           <div class="col-12">
             <p>No data - Start posting!</p>
           </div>
-        <?php else:
+          <?php
+        else:
           foreach (array_reverse($recoveredArray['posts']) as $key => $data): ?>
           <div class="card col-sm-12 col-md-6">
             <div class="card-body row align-items-center">
               <div class="card-title col-es-12 col-md-6"><?php echo $data['title']; ?></div>
               <div class="col-es-12 col-md-6 row justify-content-end">by <?php echo $data['author']; ?></div>
-              <div class="card-text col-12 bg-info" style="height: 200px; overflow: scroll;"><?php echo $data['text']; ?></div>
+              <div class="card-text col-12 bg-info" style="height: 300px; overflow: scroll;">
+                <div style="overflow: hidden;">
+                  <?php echo $data['text'];
+
+                  // Easter is early and here is the first egg.
+                  if(strpos($data['text'], "lorem") !== false && strpos($data['text'], "ipsum") !== false)
+                  {
+                    require 'static/html/secret.html';
+                  } ?>
+                </div>
+              </div>
               <div class="col-2"><?php echo $data['likes']; ?><a class="btn btn-primary btn-sm" href="#">&#x25B2;</a></div>
               <div class="col-9 row justify-content-end"><?php echo $data['date']; ?></div>
               <div class="col-1">
@@ -97,13 +110,29 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile)){
               </div>
             </div>
           </div>
-        <?php endforeach;
+          <?php
+        endforeach;
       endif; ?>
     </div>
   </section>
+  <div class="card" id="not-droids">
+    <div class="card-body">
+      <div class="card-text">
+        <p>These aren't the links you're looking for</p>
+      </div>
+    </div>
+  </div>
 </main>
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#link-btn').on('click', function(event) {
+    event.preventDefault();
+    $("#not-droids").toggleClass('show');
+  });
+});
+</script>
 </html>

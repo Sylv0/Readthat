@@ -1,8 +1,25 @@
-div.col-1 a{
-      text-decoration: none;
-      color: black;
+
+div#not-droids{
+  display: block;
+  position: fixed;
+  left: 50%;
+  top: -208px;
+  transform: translateX(-50%);
+  width: 240px;
+  height: 208px;
+  transition: all .5s ease-in-out;
+  background-image: url('../img/obi.png');
+  z-index: 5;
+  border: 3px solid black;
 }
 
-div.col-1 a:hover{
-      color: gray;
+div#not-droids.show{
+  top: 0;
+}
+
+div#not-droids p{
+  color: white;
+  bottom: 0;
+  position: fixed;
+  transform: translateY(40%);
 }
