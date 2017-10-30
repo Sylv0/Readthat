@@ -31,7 +31,7 @@ if(isset($_POST['new_post']))
     $data['author'] = array_search($data['author'], $recoveredArray['author'], true);
   }
   else {
-    header(__DIR__.'/?bad_user=true');
+    header('Location:/Readthat/?bad_user=TRUE&');
   }
   $data['likes'] = 0;
   $data['date'] = date("d-m-y H:i");
@@ -46,7 +46,7 @@ if(isset($_POST['remove_post']))
 
 $serializedData = json_encode($recoveredArray);
 file_put_contents($pathToFile, $serializedData);
-header(__DIR__);
+header("Location:/Readthat/");
 ?>
 
 <a href="/Readthat">Go back</a>
