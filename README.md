@@ -9,4 +9,4 @@ Simple newsfeed for writing and reading posts with different authors.
 2. Open index.php(requires like a webserver or something like that)
 
 # Testers
-Emma, Oskar, Linn(?)
+Emma, Oskar, Linn
