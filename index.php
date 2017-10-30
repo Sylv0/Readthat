@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-require 'static/php/functions.php';
+require __DIR__.'/static/php/functions.php';
 
 // Path to with data
-$pathToFile = 'static/js/data.json';
+$pathToFile = __DIR__.'/static/js/data.json';
 
 // Only load from file if it exists
 if(file_exists($pathToFile))
@@ -18,11 +18,11 @@ if(isset($recoveredData) && $recoveredData)
   $recoveredArray = json_decode($recoveredData, true);
 }else
 {
-  $recoveredArray = ['actors' => [], 'posts' => []];
+  $recoveredArray = ['author' => [], 'posts' => []];
 }
 
 // Create the file if it doesn't exist
-if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile))
+if(!file_exists($pathToFile))
 {
   $serializedData = json_encode($recoveredArray);
   file_put_contents($pathToFile, $serializedData);
@@ -37,11 +37,6 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile))
   <title>Readthat</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
   <link rel="stylesheet" href="static/css/master.css">
-  <script type="text/javascript">
-  const pd = function(e){
-    e.preventDefault();
-  }
-  </script>
 </head>
 <body>
   <!-- Navbar. Not used, only looks good  -->
@@ -111,7 +106,7 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile))
                   } ?>
                 </div>
               </div>
-              <div class="col-2"><a class="btn btn-primary btn-sm" href="#" onclick="pd(event);"><?php echo $data['likes']; ?></a></div>
+              <div class="col-2"><a class="btn btn-primary btn-sm like_post" href="#"><?php echo $data['likes']; ?></a></div>
               <div class="col-9 row justify-content-end"><?php echo $data['date']; ?></div>
               <div class="col-1">
                 <form method="post" action="posts.php">
@@ -138,12 +133,5 @@ if(sizeof($recoveredArray['posts']) > 0 || !file_exists($pathToFile))
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-  $('#link-btn').on('click', function(event) {
-    event.preventDefault();
-    $("#not-droids").toggleClass('show');
-  });
-});
-</script>
+<script src="static/js/main.js"></script>
 </html>

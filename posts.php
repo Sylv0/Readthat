@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 
+// Path to with data
+$pathToFile = __DIR__.'/static/js/data.json';
+
 // Try to read and decode data or create empty array.
-$recoveredData = file_get_contents('static/js/data.json');
+$recoveredData = file_get_contents($pathToFile);
 if($recoveredData){ $recoveredArray = json_decode($recoveredData, true);}
 else{ $recoveredArray = ['author' => [], 'posts' => []];}
 
@@ -12,7 +15,7 @@ if(isset($_POST['add_author']))
   $authorKey = str_replace([" ", " ", "."], "", strtolower($_POST['author']));
   if(!isset($recoveredArray['author'][$authorKey]));
   {
-    $recoveredArray['author'][$authorKey] = ucwords($_POST['author']);
+    $recoveredArray['author'][$authorKey] = ucwords(filter_var($_POST['author'], FILTER_SANITIZE_STRING));
   }
 }
 
@@ -21,11 +24,14 @@ if(isset($_POST['new_post']))
   $data = [];
   foreach ($_POST as $key => $value)
   {
-    if(strlen($value) > 0) $data[$key] = $value;
+    $data[$key] = filter_var($value, FILTER_SANITIZE_STRING);
   }
   if(in_array($data['author'], $recoveredArray['author']))
   {
     $data['author'] = array_search($data['author'], $recoveredArray['author'], true);
+  }
+  else {
+    header(__DIR__.'/?bad_user=true');
   }
   $data['likes'] = 0;
   $data['date'] = date("d-m-y H:i");
@@ -39,8 +45,8 @@ if(isset($_POST['remove_post']))
 }
 
 $serializedData = json_encode($recoveredArray);
-file_put_contents('static/js/data.json', $serializedData);
-header('Location: /Readthat');
+file_put_contents($pathToFile, $serializedData);
+header(__DIR__);
 ?>
 
 <a href="/Readthat">Go back</a>
