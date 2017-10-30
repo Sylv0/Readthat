@@ -91,7 +91,8 @@ if(!file_exists($pathToFile))
             <div class="card-body row align-items-center">
               <div class="card-title col-es-12 col-md-6"><?php echo $data['title']; ?></div>
               <div class="col-es-12 col-md-6 row justify-content-end">
-                by <?php if(isset($recoveredArray['author'][strToKey($data['author'])]))echo $recoveredArray['author'][strToKey($data['author'])]; else echo $data['author'] ?>
+                by <?php if(isset($recoveredArray['author'][strToKey($data['author'])]))echo $recoveredArray['author'][strToKey($data['author'])];
+                else echo $data['author'].'(Guest)' ?>
               </div>
               <div class="card-text col-12 bg-info" style="height: 300px; overflow: scroll;">
                 <div style="overflow: hidden;">
