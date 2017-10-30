@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
+// Load functions file (with 1 function...).
 require __DIR__.'/static/php/functions.php';
 
-// Path to with data
+// Path to with data.
 $pathToFile = __DIR__.'/static/js/data.json';
 
 // Only load from file if it exists
@@ -12,7 +13,7 @@ if(file_exists($pathToFile))
   $recoveredData = file_get_contents($pathToFile);
 }
 
-// Decode JSON if there's data, else create array
+// Decode JSON if there's data, else create array.
 if(isset($recoveredData) && $recoveredData)
 {
   $recoveredArray = json_decode($recoveredData, true);
@@ -21,7 +22,7 @@ if(isset($recoveredData) && $recoveredData)
   $recoveredArray = ['author' => [], 'posts' => []];
 }
 
-// Create the file if it doesn't exist
+// Create the file if it doesn't exist.
 if(!file_exists($pathToFile))
 {
   $serializedData = json_encode($recoveredArray);
@@ -41,14 +42,14 @@ if(!file_exists($pathToFile))
 <body>
   <!-- Navbar. Not used, only looks good  -->
   <nav class="navbar navbar-expand-md navbar-light bg-light">
-    <a class="navbar-brand" href="/Readthat/">Readthat</a>
+    <a class="navbar-brand" href=".">Readthat</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="/Readthat/">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href=".">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a id="link-btn" class="nav-link" href="/Readthat/links.php" onclick="">Link</a>
@@ -58,6 +59,7 @@ if(!file_exists($pathToFile))
   </nav>
 
   <main class="container">
+    <!-- Form for new posts -->
     <form method="post" action="posts.php">
       <div class="form-group row">
         <input type="text" class="form-control col-sm-12 col-md-6" id="title" placeholder="Title" name="title">
@@ -78,6 +80,7 @@ if(!file_exists($pathToFile))
     </form>
     <hr>
 
+    <!-- Section for all posts and PHP logic -->
     <section class="container">
       <div class="row">
         <?php if(sizeof($recoveredArray['posts']) === 0): ?>
@@ -98,7 +101,7 @@ if(!file_exists($pathToFile))
                 <div style="overflow: hidden;">
                   <?php
                   // If title contains the words 'lorem' and 'ipsum', gif.
-                  if(strpos($data['title'], "lorem") !== false && strpos($data['title'], "ipsum") !== false)
+                  if(strpos(strtolower($data['title']), "lorem") !== false && strpos(strtolower($data['title']), "ipsum") !== false)
                   {
                     require 'static/html/secret.html';
                     // Else, regular text.
@@ -122,6 +125,8 @@ if(!file_exists($pathToFile))
       endif; ?>
     </div>
   </section>
+
+  <!-- Easter egg -->
   <div class="card" id="not-droids">
     <div class="card-body">
       <div class="card-text">
